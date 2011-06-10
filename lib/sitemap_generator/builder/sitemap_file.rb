@@ -20,7 +20,11 @@ module SitemapGenerator
       #
       # * <tt>location</tt> - a SitemapGenerator::SitemapLocation instance or a Hash of options
       #   from which a SitemapLocation will be created for you.
+      # 
+      # * <tt>gzip</tt> - if the output should be gzipped or not. Default: true
+      
       def initialize(opts={})
+        @gzip = opts.is_a?(Hash) ? opts[:gzip] : true
         @location = opts.is_a?(Hash) ? SitemapGenerator::SitemapLocation.new(opts) : opts
         @link_count = 0
         @xml_content = '' # XML urlset content
@@ -103,7 +107,8 @@ module SitemapGenerator
 
         # Write out the file
         open(@location.path, 'wb') do |file|
-          gz = Zlib::GzipWriter.new(file)
+          # gz = @gzip ?  Zlib::GzipWriter.new(file) : file
+          gz = file
           gz.write @xml_wrapper_start
           gz.write @xml_content
           gz.write @xml_wrapper_end
